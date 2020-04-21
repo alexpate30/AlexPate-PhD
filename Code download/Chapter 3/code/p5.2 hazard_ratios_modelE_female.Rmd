@@ -1,0 +1,26 @@
+---
+title: "Hazard Ratios Model E female"
+author: "Alex Pate"
+date: "24/07/2018"
+output: word_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r,echo=FALSE}
+library(knitr)
+library(kableExtra)
+setwd("B")
+
+load("hazard_ratios_modelE_female.RData")
+
+kable(cbind(HR.av,CI.lower,CI.upper),digits=c(2,2,2))
+
+print("And now hazard ratio for time and time.frac1 but by year")
+print("time")
+time.year
+time.year.upper
+time.year.lower
+```

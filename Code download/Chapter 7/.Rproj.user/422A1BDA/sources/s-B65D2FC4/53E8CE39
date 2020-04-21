@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1585251265924.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "53E8CE39",
+    "lastKnownWriteTime" : 1585250155,
+    "last_content_update" : 1585250155,
+    "path" : "P:/Documents/PhD/Code download/Chapter 7/code/p1.2 run_imputation_h1.R",
+    "project_path" : "code/p1.2 run_imputation_h1.R",
+    "properties" : {
+        "cursorPosition" : "16,73",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

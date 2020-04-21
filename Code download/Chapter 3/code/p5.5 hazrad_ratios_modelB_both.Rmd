@@ -1,0 +1,25 @@
+---
+title: "Hazard ratios QRISK3"
+author: "Alex Pate"
+date: "04/05/2018"
+output: word_document
+---
+
+
+
+```{r}
+setwd("B")
+
+library(dplyr)
+library(knitr)
+
+print("male")
+load("hazard_ratios_modelB_male.RData")
+
+kable(means.HR, digits=2)
+
+print("female")
+load("hazard_ratios_modelB_female.RData")
+
+kable(means.HR, digits = 2)
+```

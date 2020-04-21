@@ -1,0 +1,55 @@
+---
+title: "calibration_male_split.R"
+author: "Alex Pate"
+date: "12/03/2018"
+output: word_document
+---
+
+How the risks were generated:
+
+Predicted survival probabilities were generated using each of the 10 imputed datasets and the respective models built from those 10 datasets. That is, a seperate model was fitted to each imputed dataset, and then survival probabilities were generated from each of the models. These survival probabilities were then averaged on the log(-log(survival probability)) scale, before being transformed back. This is done as rubins rules are valid on this scale.
+
+Observed survival probabilities were calculated using the kaplan meier estimate at 10 years for the group in question. That is, kaplan meier survival curves are fit to the cohort of interest and the survival probability at 10 years is taken.
+
+```{r,echo=FALSE}
+library(knitr)
+setwd("B")
+load("calibration_male_split.RData")
+
+# Now make a data frame with everything I want to plot
+plot.data<-data.frame(percentile=1:10,km.all,predrisk.all)
+plot.data<-100*plot.data
+plot.data$percentile <- (plot.data$percentile)/10
+```
+
+Average predicted risk in male cohort
+```{r,echo=FALSE}
+pred.risk
+```
+
+Average observed risk in male cohort
+```{r,echo=FALSE}
+obs.risk
+```
+
+Now we show calibration plots, by 10th of predicted risk, for the entire cohort, and the sub cohorts defined by age
+
+```{r,echo=FALSE}
+library(dplyr)
+library(knitr)
+library(reshape2)
+library(ggplot2)
+
+## For each plot I need to extract the right data, and reshape it
+
+## All patients
+temp.dat<-select(plot.data,c("percentile","km.all","predrisk.all"))
+colnames(temp.dat)<-c("percentile","observed","predicted")
+
+# Now reshapre into long format
+temp.dat<-melt(temp.dat,id="percentile")
+
+# Now plot
+p<-ggplot(temp.dat) 
+p+ geom_point(aes(x=percentile,y=value,shape=variable)) + scale_shape_manual(values=c(1,19)) + ggtitle("Male - All patients") + ylab("Average 10 year risk")
+```

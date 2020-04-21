@@ -1,0 +1,66 @@
+---
+title: "male_fp_tables_generate"
+author: "Alex Pate"
+date: "09/03/2018"
+output: word_document
+---
+
+
+```{r, echo=FALSE}
+setwd("B")
+load("male_tables_generated_cohort2016.RData")
+library(knitr)
+library(kableExtra)
+```
+
+Summary Table 1 - Summary of incidence rates
+
+```{r, echo=FALSE}
+kable(incidence.rates,digits=c(2,2,2))
+```
+<br>
+
+Summary Table 2 - Summary of the risks generated from each of the models.
+
+```{r, echo=FALSE}
+kable(summary.dat,digits=c(2,2,2,2,2,2,2))
+```
+<br>
+
+
+The rest of the tables are planned tables for the paper.
+
+Table 5 - Raw numbers and porpotion of patients from each risk group (as defined by risks from model A) whose risk would cross the treatment threshold (10% risk) for each of the models
+```{r, echo=FALSE}
+table5<-cbind(paste(table5.list[[6]]$num," (",round(table5.list[[6]]$prop),"%)",sep=""),paste(table5.list[[7]]$num," (",round(table5.list[[7]]$prop),"%)",sep=""),
+              paste(table5.list[[8]]$num," (",round(table5.list[[8]]$prop),"%)",sep=""),paste(table5.list[[9]]$num," (",round(table5.list[[9]]$prop),"%)",sep=""),
+              paste(table5.list[[10]]$num," (",round(table5.list[[10]]$prop),"%)",sep=""),paste(table5.num[,22]," (",round(table5.prop[,22]),"%)",sep=""),
+              paste(table5.list[[11]]$num," (",round(table5.list[[11]]$prop),"%)",sep=""),paste(table5.list[[12]]$num," (",round(table5.list[[12]]$prop),"%)",sep=""),
+              paste(table5.list[[13]]$num," (",round(table5.list[[13]]$prop),"%)",sep=""),paste(table5.list[[14]]$num," (",round(table5.list[[14]]$prop),"%)",sep=""),
+              paste(table5.list[[15]]$num," (",round(table5.list[[15]]$prop),"%)",sep=""),paste(table5.num[,23]," (",round(table5.prop[,23]),"%)",sep=""))
+colnames(table5)<-c("5-6%","6-7%","7-8%","8-9%","9-10%","Total over",
+                    "10-11%","11-12%","12-13%","13-14%","14-15%","Total under")
+
+
+kable(table5)
+```
+<br>
+
+
+Table 4
+```{r, echo=FALSE}
+table4.v2 <- data.frame("Model B" = paste(sprintf("%.1f", round(table4[,1],1)),"-",sprintf("%.1f", round(table4[,2],1)),"%",sep=""),
+                       "Model C" = paste(sprintf("%.1f", round(table4[,3],1)),"-",sprintf("%.1f", round(table4[,4],1)),"%",sep=""),
+                       "Model D" = paste(sprintf("%.1f", round(table4[,5],1)),"-",sprintf("%.1f", round(table4[,6],1)),"%",sep=""),
+                       "Model E" = paste(sprintf("%.1f", round(table4[,7],1)),"-",sprintf("%.1f", round(table4[,8],1)),"%",sep=""),
+                       "Model F" = paste(sprintf("%.1f", round(table4[,9],1)),"-",sprintf("%.1f", round(table4[,10],1)),"%",sep=""))
+kable(table4.v2)
+
+table4.v3 <- data.frame("Model B" = paste(round(table4[,1],1)," - ",round(table4[,2],1),"%",sep=""),
+                       "Model C" = paste(round(table4[,3],1)," - ",round(table4[,4],1),"%",sep=""),
+                       "Model D" = paste(round(table4[,5],1)," - ",round(table4[,6],1),"%",sep=""),
+                       "Model E" = paste(round(table4[,7],1)," - ",round(table4[,8],1),"%",sep=""),
+                       "Model F" = paste(round(table4[,9],1)," - ",round(table4[,10],1),"%",sep=""))
+kable(table4.v3)
+```
+

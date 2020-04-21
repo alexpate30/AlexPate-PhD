@@ -1,0 +1,37 @@
+---
+title: "summarise_statin_cohort"
+author: "Alex Pate"
+date: "04/02/2019"
+output: word_document
+---
+
+```{r, echo=FALSE}
+### SET ROOT DIRECTORY
+
+### SET ROOT DIRECTORY
+load("R_out_C6/summarise_statin_cohort_FAKE.RData")
+
+library(knitr)
+print("women mean")
+kable(t(df.sum.cont.women.mean),digits=2)
+print("sd")
+kable(t(df.sum.cont.women.sd),digits=2)
+kable(df.sum.cat.women,digits=2)
+
+print("N.women")
+N.women
+
+print("men mean")
+kable(t(df.sum.cont.men.mean),digits=2)
+print("sd")
+kable(t(df.sum.cont.men.sd),digits=2)
+kable(df.sum.cat.men,digits=2)
+
+print("N.men")
+N.men
+
+print("women primary prevention")
+kable(prim.prev.women,digits=2)
+print("men primary prevention")
+kable(prim.prev.men,digits=2)
+```

@@ -1,0 +1,23 @@
+---
+title: "Region HR calculations"
+author: "Alex Pate"
+date: "28/08/2018"
+output: word_document
+---
+
+
+```{r,echo=FALSE}
+setwd("B")
+load("region_HR_calculations.RData")
+
+library(knitr)
+options(digits=2)
+
+female.tab <- cbind("HR" = female.HR, "lower" = female.CI.lower, "upper" = female.CI.upper)
+male.tab <- cbind("HR" = male.HR,"lower" = male.CI.lower, "upper" = male.CI.upper)
+
+print("female")
+female.tab
+print("male")
+male.tab
+```

@@ -1,0 +1,31 @@
+---
+title: "baseline_table"
+author: "Alex Pate"
+date: "05/03/2019"
+output: word_document
+---
+
+```{r, echo=FALSE}
+### SET ROOT DIRECTORY
+setwd("/mnt/bmh01-rds/vanstaa/practice2019/alex/Chapter4/")
+### SET ROOT DIRECTORY
+
+load("R_out_C4/baseline_table_female.RData")
+
+library(knitr)
+
+## Calculate n's
+## Also count number of patients in each cohort
+print("cohort sizes")
+cohort.sizes
+print("cont")
+kable(cont.vars)
+print("cat")
+kable(cat.vars,digits=c(2,2,2,2,2,2))
+print("miss")
+kable(miss.vars, digits=c(2,2,2,2,2,2))
+print("events")
+events
+print("followup")
+followup
+```

@@ -1,0 +1,141 @@
+### SET ROOT DIRECTORY
+
+### SET ROOT DIRECTORY
+
+
+### This program we generate the risks for the 2016 cohort, and Harrels C and calibration in the large in the validation cohort, 
+### for 1000 different models of sample size 100000 sampled from the development population
+
+
+library(foreach)
+library(doParallel)
+library(dplyr)
+library(survival)
+library(Hmisc)
+
+
+### First load the data (2016 cohort, development population, validation cohort)
+load("R_out_C4/female_datasets_loaded_sample_size.RData")
+
+#### Now want to generate risks for 1000 different subsets of the data_devel
+#### I will calculate risks for patients in data.2016
+#### I will calculate HarrelsC and calibration in the large in data_valid
+
+
+### PART A: DEFINE FUNCTIONS, STORAGE DATA FRAMES AND QUANTITES TO BE USED IN THE SIMULATION ###
+### PART A: DEFINE FUNCTIONS, STORAGE DATA FRAMES AND QUANTITES TO BE USED IN THE SIMULATION ###
+### PART A: DEFINE FUNCTIONS, STORAGE DATA FRAMES AND QUANTITES TO BE USED IN THE SIMULATION ###
+
+
+# Create a dataframe to store the bootstrapped risks
+risks.bootstrap <- matrix(,nrow = nrow(data.2016), ncol = 1000)
+risks.bootstrap <- data.frame(risks.bootstrap)
+
+## Also create a vector to store the HarrelsC's
+HarrelsC.bootstrap <- rep(0,1000)
+
+## Also create a vector to store calibration in large
+calibration.in.large.bootstrap <- rep(0,1000)
+
+## Next define function for creating risks for a given model, and new set of data to calculate risks for
+create_risks<-function(model,new.dat){
+  
+  ## Extract important coefficients and design matrix
+  B<-model$coefficients
+  C<-model$var
+  S<-model.matrix(Surv(patid,cens_fake, type='right') ~ age + BMI + Cholesterol_HDL_Ratio + Famhis_lstrict + Hypertension+ 
+                    SBP+ Smoking + T2dia+ Townsend, data=new.dat)
+  S<-S[,-1]
+  p<-(S%*%B)[,1]
+  lp<-data.frame(lin.pred=p)
+  basehaz<-basehaz(model,centered=FALSE)
+  ## Extract the cumulative hazard at 10 years
+  ## Note there will not always be a person with 3652 days follow up, and therefore the hazard function
+  ## may be undefined at this point in the R function. It is however defined mathematically, as the cumulative hazard
+  ## is constant until the next event. We therefore take the hazard as the nearest time point prior to 3653, to be
+  ## the cumulative hazard at 10 years
+  basehaz10y<-basehaz$hazard[which.max(basehaz$time[basehaz$time < 3653])]
+  surv<-exp(-basehaz10y*exp(lp))
+  return(surv)
+}
+
+
+## Before going into the loop, we want to calculate the observed risk for the calibration cohort - "km.risk.valid"
+## When calculating the calibration in the large for each model, this quantity will be the same everytime, as the observed
+## risk in the calibration cohort will not change. Therefore better to calculate it now, and store it for use later
+
+## Start by generating a KM curve in the validation cohort
+valid.survfit <- survfit(Surv(CVD_time,CVD_cens_R, type='right') ~ 1,
+              data=data_valid)
+
+## km.survfit may not have a 3652 value, so find a value that it does have (similar process to above, when deriving predicted
+## risks at 3653, find the closest time prior to 3653 at which it is defined)
+km.risk.valid <- 1-valid.survfit$surv[which.max(valid.survfit$time[valid.survfit$time < 3653])]
+
+
+
+### PART B: RUN THE SIMULATION ###
+### PART B: RUN THE SIMULATION ###
+### PART B: RUN THE SIMULATION ###
+
+## Set seed
+set.seed(500)
+
+### Create a loop in which we sample the development population 1000 times, and each time calculate the required statistics
+for (k in 1:1000){
+
+## Want to reduce development data to a random subset of 100000 patients, called random.dat
+## Extract 100000 row numbers at random
+row.ids <- sample(1:nrow(data_devel),100000, replace = FALSE)
+random.dat <- data_devel[row.ids,]
+
+## Fit a model on this sampled data
+fit_data<-coxph(Surv(CVD_time,CVD_cens_R, type='right') ~ age + BMI + Cholesterol_HDL_Ratio + Famhis_lstrict + Hypertension+ 
+                                      SBP+ Smoking + T2dia+ Townsend, data=random.dat)
+
+
+### 1. Now want to calculate risks in the 2016 cohort, using the above model
+### 1. Now want to calculate risks in the 2016 cohort, using the above model
+
+## Generate risks for the 2016 cohort using the above defined function
+risk.all<-1-create_risks(fit_data, data.2016)$lin.pred
+
+## Assign them to risks.bootstrap data frame
+risks.bootstrap[,k] <- risk.all
+
+
+
+### 2. Now want to calculate C statistic in the validation cohort
+### 2. Now want to calculate C statistic in the validation cohort
+
+## Generate linear predictors for this dataset using the model (note we dont need risks, just linear predictor, so can sue R function predict)
+pred.model <- predict(fit_data, newdata= data_valid)
+
+## Calculate Harrels C and store it
+HarrelsC <- rcorr.cens(x=pred.model,S=Surv(data_valid$CVD_time,data_valid$CVD_cens_R))["C Index"]
+HarrelsC.bootstrap[k] <- 1 - HarrelsC
+
+
+### 3. Now want to calculate the calibration in large in the validation cohort
+### 3. Now want to calculate the calibration in large in the validation cohort
+
+## First generate risks for the validation cohort predicted risk and calculate the mean
+risk.all.valid<-1-create_risks(fit_data, data_valid)$lin.pred
+pred.risk.mean <- mean(risk.all.valid)
+
+
+## Calculate difference between this and the observed risk in the validation cohort
+calibration.in.large <- pred.risk.mean - km.risk.valid
+
+## Assign to calibration in the large
+calibration.in.large.bootstrap[k] <- calibration.in.large
+
+print(Sys.time())
+print(k)}
+
+colnames(risks.bootstrap) <- paste("boot",1:1000,sep="")
+
+rm(list=setdiff(ls(),list("risks.bootstrap","calibration.in.large.bootstrap","HarrelsC.bootstrap")))
+
+save.image("R_out_C4/generate_risks_different_cohort_sizes_female_100000.RData")
+print("saved")

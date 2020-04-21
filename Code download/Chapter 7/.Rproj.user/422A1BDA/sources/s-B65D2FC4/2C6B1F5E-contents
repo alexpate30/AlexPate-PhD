@@ -1,0 +1,18 @@
+---
+title: "table1_female_clinicl_piece_sample_size"
+author: "Alex Pate"
+date: "29/07/2019"
+output: word_document
+---
+
+```{r, echo=FALSE}
+### SET ROOT DIRECTORY
+setwd("P:/Documents/PhD/Code download/Chapter 4/")
+### SET ROOT DIRECTORY
+
+load("R_out_C4/table2_female_percentage_over_threshold.RData")
+
+library(knitr)
+
+kable(table2)
+```

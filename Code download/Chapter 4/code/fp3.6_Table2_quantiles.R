@@ -1,0 +1,56 @@
+### SET ROOT DIRECTORY
+
+### SET ROOT DIRECTORY
+
+## This code will generate the range of quantiles for each sample size
+
+library(ggplot2)
+library(ggpubr)
+library(dplyr)
+library(matrixStats)
+
+#### First do the 1434 cohort size
+load("R_out_C4/generate_risks_different_cohort_sizes_female_1434.RData")
+
+## First calculate the quantiles for thirds of the C statistics, so I can subset based on these values
+quantiles.C.nmin.female <- round(quantile(HarrelsC.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),3)
+quantiles.calib.nmin.female <- round(100*quantile(calibration.in.large.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),2)
+
+
+
+#### Next do the 10000 cohort size
+load("R_out_C4/generate_risks_different_cohort_sizes_female_10000.RData")
+
+## First calculate the quantiles for thirds of the C statistics, so I can subset based on these values
+quantiles.C.10000.female <- round(quantile(HarrelsC.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),3)
+quantiles.calib.10000.female <- round(100*quantile(calibration.in.large.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),2)
+
+
+#### Next do the 50000 cohort size
+load("R_out_C4/generate_risks_different_cohort_sizes_female_50000.RData")
+
+## First calculate the quantiles for thirds of the C statistics, so I can subset based on these values
+quantiles.C.50000.female <- round(quantile(HarrelsC.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),3)
+quantiles.calib.50000.female <- round(100*quantile(calibration.in.large.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),2)
+
+
+#### Next do the 100000 cohort size
+load("R_out_C4/generate_risks_different_cohort_sizes_female_100000.RData")
+
+## First calculate the quantiles for thirds of the C statistics, so I can subset based on these values
+quantiles.C.100000.female <- round(quantile(HarrelsC.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),3)
+quantiles.calib.100000.female <- round(100*quantile(calibration.in.large.bootstrap,probs = c(0.025,0.25,0.5,0.75,0.975)),2)
+
+
+
+quantiles.C.table.female <- rbind(quantiles.C.nmin.female,quantiles.C.10000.female,
+                         quantiles.C.50000.female,quantiles.C.100000.female)
+
+
+quantiles.calib.table.female <- rbind(quantiles.calib.nmin.female,quantiles.calib.10000.female,
+                                  quantiles.calib.50000.female,quantiles.calib.100000.female)
+
+rm(list=setdiff(ls(),list("quantiles.C.table.female",
+                          "quantiles.calib.table.female")))
+
+save.image("R_out_C4/quantiles_table.RData")

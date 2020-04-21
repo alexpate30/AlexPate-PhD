@@ -1,0 +1,20 @@
+---
+title: "quantiles_table"
+author: "Alex Pate"
+date: "29/07/2019"
+output: word_document
+---
+
+```{r, echo=FALSE}
+### SET ROOT DIRECTORY
+
+### SET ROOT DIRECTORY
+
+load("R_out_C4/quantiles_table.RData")
+
+library(knitr)
+
+kable(quantiles.C.table.female)
+
+kable(quantiles.calib.table.female)
+

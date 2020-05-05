@@ -202,6 +202,9 @@ pred[c("age","BMI"),"age.BMI"]<-0
 # SBP
 pred[c("age","SBP"),"age.SBP"]<-0
 
+# Chol and HDL, don't want to perdictor cholesterol or HDL by Cholsterol/HDL ratio
+pred[c("Cholesterol","HDL"),"Cholesterol_HDL_Ratio"]<-0
+
 ## Categorical variables
 pred[c("age","Smoking"),c("age.Smoking.1","age.Smoking.2","age.Smoking.3","age.Smoking.4")]<-0
 pred[c("age","Townsend"),c("age.Townsend.1","age.Townsend.2","age.Townsend.3","age.Townsend.4")]<-0
